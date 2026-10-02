@@ -54,10 +54,17 @@
         <a href="#code-lab" class="pill-item">Code Lab</a>
         <a href="#skills" class="pill-item">Texnologiyalar</a>
         <a href="#services" class="pill-item">Xidmətlər</a>
+        <button type="button" class="pill-item pill-cv-trigger" id="openCvBtn">
+          <i class="fa-regular fa-file-pdf text-fire"></i> CV
+        </button>
         <a href="#contact" class="pill-item">Əlaqə</a>
       </nav>
 
       <div class="nav-quick-actions">
+        <button type="button" class="btn-pill-cv" id="navCvQuickBtn" title="CV-yə Bax &amp; Yüklə">
+          <i class="fa-regular fa-file-pdf"></i>
+          <span>CV</span>
+        </button>
         <a href="https://github.com/vahidselimov" target="_blank" rel="noopener noreferrer" class="nav-icon-link" aria-label="GitHub">
           <i class="fa-brands fa-github"></i>
         </a>
@@ -115,6 +122,10 @@
           </div>
 
           <div class="hero-actions-row fade-in delay-4">
+            <button type="button" class="btn-motion-cv" id="heroCvBtn">
+              <i class="fa-regular fa-file-pdf"></i>
+              <span>CV / Rezüme (AZ &amp; EN)</span>
+            </button>
             <a href="#ocaqdev" class="btn-motion-primary">
               <span class="btn-inner">
                 <i class="fa-solid fa-fire"></i>
@@ -124,7 +135,7 @@
             </a>
             <a href="https://github.com/vahidselimov" target="_blank" rel="noopener noreferrer" class="btn-motion-secondary">
               <i class="fa-brands fa-github"></i>
-              <span>GitHub Repozitoriyalar</span>
+              <span>GitHub</span>
             </a>
             <a href="https://wa.me/994509621210" target="_blank" rel="noopener noreferrer" class="btn-motion-whatsapp">
               <i class="fa-brands fa-whatsapp"></i>
@@ -1088,6 +1099,109 @@
       </a>
     </div>
   </footer>
+
+  <!-- =========================================================================
+       CV VIEWER MODAL (Azərbaycan & English)
+       ========================================================================= -->
+  <div class="cv-modal-backdrop" id="cvModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="cvModalTitle">
+    <div class="cv-modal-window">
+      
+      <!-- Modal Header (IDE Document Style) -->
+      <div class="cv-modal-header font-mono">
+        <div class="cv-header-left">
+          <div class="cv-window-dots">
+            <span class="dot red" id="cvDotClose" title="Bağla"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+          </div>
+          <div class="cv-doc-title" id="cvModalTitle">
+            <i class="fa-regular fa-file-pdf text-fire"></i>
+            <span id="cvFileNameDisplay">Vahid_Salimov_Resume_AZ.pdf</span>
+          </div>
+        </div>
+
+        <!-- Language Switcher Controls -->
+        <div class="cv-lang-switcher">
+          <button type="button" class="lang-pill-btn active" data-lang="az" id="cvLangAzBtn">
+            <span class="flag-icon">🇦🇿</span>
+            <span>Azərbaycan (AZ)</span>
+          </button>
+          <button type="button" class="lang-pill-btn" data-lang="en" id="cvLangEnBtn">
+            <span class="flag-icon">🇬🇧</span>
+            <span>English (EN)</span>
+          </button>
+        </div>
+
+        <!-- Header Actions: Download, Open in Tab & Close -->
+        <div class="cv-header-actions">
+          <button type="button" class="btn-cv-download" id="cvDownloadBtn" title="CV-ni yüklə">
+            <i class="fa-solid fa-download"></i>
+            <span id="downloadBtnText">Yüklə (PDF)</span>
+          </button>
+          <a href="assets/cv/Vahid_Salimov_Resume_AZ.pdf" target="_blank" rel="noopener noreferrer" class="cv-action-icon-btn" id="cvOpenTabBtn" title="Tam ekranda / Yeni tabda aç" aria-label="Yeni tabda aç">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          </a>
+          <button type="button" class="cv-action-icon-btn cv-close-trigger" id="cvCloseBtn" title="Bağla (Esc)" aria-label="Bağla">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Modal Body (PDF Viewer) -->
+      <div class="cv-modal-body">
+        <iframe src="assets/cv/Vahid_Salimov_Resume_AZ.pdf#toolbar=0" id="cvIframe" class="cv-iframe" title="Vahid Salimov CV"></iframe>
+        
+        <!-- Mobile / Fallback Toolbar if iframe has issues on small mobile screens -->
+        <div class="cv-mobile-notice font-mono">
+          <p>Mobil cihazda birbaşa açılmırsa:</p>
+          <a href="assets/cv/Vahid_Salimov_Resume_AZ.pdf" download id="cvFallbackDownloadBtn" class="btn-motion-primary">
+            <span class="btn-inner">
+              <i class="fa-solid fa-download"></i>
+              <span>PDF-i Cihaza Yüklə</span>
+            </span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Modal Footer Status -->
+      <div class="cv-modal-footer font-mono">
+        <span class="cv-footer-info">
+          <i class="fa-solid fa-circle-check text-emerald"></i>
+          <span id="cvStatusText">Hazırda baxılır: Azərbaycan dili (AZ) · PDF formatı</span>
+        </span>
+        <span class="cv-footer-hint">Bağlamaq üçün ESC və ya ✕ klikləyin</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       EXIT CONFIRMATION DIALOG (CV-ni yükləmək istəyirsiniz?)
+       ========================================================================= -->
+  <div class="exit-confirm-backdrop" id="cvExitConfirmModal" aria-hidden="true" role="alertdialog" aria-modal="true" aria-labelledby="exitDialogTitle">
+    <div class="exit-confirm-card font-mono">
+      <div class="exit-icon-glow">
+        <i class="fa-solid fa-cloud-arrow-down"></i>
+      </div>
+      <h3 class="exit-title" id="exitDialogTitle">CV-ni yükləmək istəyirsiniz?</h3>
+      <p class="exit-desc">
+        Səhifəni bağlamazdan əvvəl Vahid Səlimovun CV-sini (<span id="exitLangName" class="text-fire">Azərbaycan</span> dilində PDF) cihazınıza yükləmək istərdinizmi?
+      </p>
+
+      <div class="exit-actions-column">
+        <button type="button" class="btn-exit-download" id="confirmDownloadAndExit">
+          <i class="fa-solid fa-download"></i>
+          <span>Bəli, yüklə və çıx</span>
+        </button>
+        <button type="button" class="btn-exit-cancel" id="confirmJustExit">
+          <span>Xeyr, sadəcə çıx</span>
+        </button>
+        <button type="button" class="btn-exit-stay" id="cancelExit">
+          <span>CV-yə baxmağa davam et</span>
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Toast Notification -->
   <div class="toast-box font-mono" id="toastNotification" role="alert" aria-live="polite">

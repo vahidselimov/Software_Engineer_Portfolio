@@ -239,4 +239,162 @@ document.addEventListener('DOMContentLoaded', () => {
     yearEl.textContent = new Date().getFullYear();
   }
 
+  // --- 9. CV Modal & Exit Confirmation Engine ---
+  const cvModal = document.getElementById('cvModal');
+  const cvExitConfirmModal = document.getElementById('cvExitConfirmModal');
+  const cvIframe = document.getElementById('cvIframe');
+  const cvFileNameDisplay = document.getElementById('cvFileNameDisplay');
+  const cvStatusText = document.getElementById('cvStatusText');
+  const cvOpenTabBtn = document.getElementById('cvOpenTabBtn');
+  const cvFallbackDownloadBtn = document.getElementById('cvFallbackDownloadBtn');
+  const exitLangName = document.getElementById('exitLangName');
+
+  const openCvBtn = document.getElementById('openCvBtn');
+  const navCvQuickBtn = document.getElementById('navCvQuickBtn');
+  const heroCvBtn = document.getElementById('heroCvBtn');
+  const cvCloseBtn = document.getElementById('cvCloseBtn');
+  const cvDotClose = document.getElementById('cvDotClose');
+  const cvDownloadBtn = document.getElementById('cvDownloadBtn');
+  const cvLangAzBtn = document.getElementById('cvLangAzBtn');
+  const cvLangEnBtn = document.getElementById('cvLangEnBtn');
+
+  const confirmDownloadAndExit = document.getElementById('confirmDownloadAndExit');
+  const confirmJustExit = document.getElementById('confirmJustExit');
+  const cancelExit = document.getElementById('cancelExit');
+
+  // State
+  let currentCvLang = 'az';
+  let hasDownloadedCv = false;
+
+  const cvData = {
+    az: {
+      url: 'assets/cv/Vahid_Salimov_Resume_AZ.pdf',
+      fileName: 'Vahid_Salimov_Resume_AZ.pdf',
+      langLabel: 'Azərbaycan',
+      status: 'Hazırda baxılır: Azərbaycan dili (AZ) · PDF formatı'
+    },
+    en: {
+      url: 'assets/cv/Vahid_Salimov_Resume_EN.pdf',
+      fileName: 'Vahid_Salimov_Resume_EN.pdf',
+      langLabel: 'İngilis (EN)',
+      status: 'Currently viewing: English (EN) · PDF format'
+    }
+  };
+
+  const switchCvLanguage = (lang) => {
+    if (!cvData[lang]) return;
+    currentCvLang = lang;
+
+    if (lang === 'az') {
+      cvLangAzBtn.classList.add('active');
+      cvLangEnBtn.classList.remove('active');
+    } else {
+      cvLangEnBtn.classList.add('active');
+      cvLangAzBtn.classList.remove('active');
+    }
+
+    const data = cvData[lang];
+    if (cvIframe) cvIframe.src = `${data.url}#toolbar=0`;
+    if (cvFileNameDisplay) cvFileNameDisplay.textContent = data.fileName;
+    if (cvStatusText) cvStatusText.textContent = data.status;
+    if (cvOpenTabBtn) cvOpenTabBtn.href = data.url;
+    if (cvFallbackDownloadBtn) {
+      cvFallbackDownloadBtn.href = data.url;
+      cvFallbackDownloadBtn.setAttribute('download', data.fileName);
+    }
+    if (exitLangName) exitLangName.textContent = data.langLabel;
+  };
+
+  const downloadCurrentCv = () => {
+    const data = cvData[currentCvLang];
+    const link = document.createElement('a');
+    link.href = data.url;
+    link.download = data.fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    hasDownloadedCv = true;
+    showToast(`Vahid Səlimovun CV-si (${data.langLabel}) yükləndi!`);
+  };
+
+  const openCvModal = () => {
+    hasDownloadedCv = false;
+    switchCvLanguage('az');
+    if (cvModal) cvModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  };
+
+  const attemptCloseCv = () => {
+    if (hasDownloadedCv) {
+      forceCloseAllCvModals();
+    } else {
+      // User has not downloaded yet, prompt confirmation
+      if (cvExitConfirmModal) cvExitConfirmModal.classList.add('active');
+    }
+  };
+
+  const forceCloseAllCvModals = () => {
+    if (cvExitConfirmModal) cvExitConfirmModal.classList.remove('active');
+    if (cvModal) cvModal.classList.remove('active');
+    document.body.style.overflow = '';
+  };
+
+  // Event Listeners for Open
+  if (openCvBtn) openCvBtn.addEventListener('click', openCvModal);
+  if (navCvQuickBtn) navCvQuickBtn.addEventListener('click', openCvModal);
+  if (heroCvBtn) heroCvBtn.addEventListener('click', openCvModal);
+
+  // Event Listeners for Language Switch
+  if (cvLangAzBtn) cvLangAzBtn.addEventListener('click', () => switchCvLanguage('az'));
+  if (cvLangEnBtn) cvLangEnBtn.addEventListener('click', () => switchCvLanguage('en'));
+
+  // Event Listener for Download
+  if (cvDownloadBtn) cvDownloadBtn.addEventListener('click', downloadCurrentCv);
+
+  // Event Listeners for Close Attempts
+  if (cvCloseBtn) cvCloseBtn.addEventListener('click', attemptCloseCv);
+  if (cvDotClose) cvDotClose.addEventListener('click', attemptCloseCv);
+
+  // Close when clicking modal backdrop
+  if (cvModal) {
+    cvModal.addEventListener('click', (e) => {
+      if (e.target === cvModal) {
+        attemptCloseCv();
+      }
+    });
+  }
+
+  // Confirmation Dialog Actions
+  if (confirmDownloadAndExit) {
+    confirmDownloadAndExit.addEventListener('click', () => {
+      downloadCurrentCv();
+      forceCloseAllCvModals();
+      showToast('CV yükləndi və pəncərə bağlandı');
+    });
+  }
+
+  if (confirmJustExit) {
+    confirmJustExit.addEventListener('click', () => {
+      forceCloseAllCvModals();
+    });
+  }
+
+  if (cancelExit) {
+    cancelExit.addEventListener('click', () => {
+      if (cvExitConfirmModal) cvExitConfirmModal.classList.remove('active');
+    });
+  }
+
+  // Escape Key Handler
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      if (cvExitConfirmModal && cvExitConfirmModal.classList.contains('active')) {
+        cvExitConfirmModal.classList.remove('active');
+      } else if (cvModal && cvModal.classList.contains('active')) {
+        attemptCloseCv();
+      }
+    }
+  });
+
 });
