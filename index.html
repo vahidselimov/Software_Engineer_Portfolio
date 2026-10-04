@@ -24,9 +24,17 @@
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+  <!-- Three.js 3D WebGL Engine -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="developer-theme">
+
+  <!-- Interactive 3D WebGL Background Canvas -->
+  <div class="three-background-canvas" id="canvas3dWrapper" aria-hidden="true">
+    <canvas id="webglCanvas"></canvas>
+  </div>
 
   <!-- Background Ambience & Engineering Matrix Grid -->
   <div class="eng-grid-overlay" aria-hidden="true"></div>
@@ -43,10 +51,12 @@
       <a href="#hero" class="nav-brand">
         <span class="brand-terminal-symbol">&gt;_</span>
         <span class="brand-name">vahid<span class="brand-dim">.salimov</span></span>
-        <span class="online-indicator" title="Status: Online & Ready to Build"></span>
+        <span class="online-indicator" title="Status: Online &amp; Ready to Build"></span>
       </a>
 
       <nav class="pill-menu" id="pillMenu">
+        <div class="nav-indicator" id="navIndicator" aria-hidden="true"></div>
+        <a href="#hero" class="pill-item active">Giriş</a>
         <a href="#about" class="pill-item">Haqqımda</a>
         <a href="#ocaqdev" class="pill-item pill-highlight">
           <span class="glow-fire">🔥</span> ocaq.dev
@@ -54,26 +64,22 @@
         <a href="#code-lab" class="pill-item">Code Lab</a>
         <a href="#skills" class="pill-item">Texnologiyalar</a>
         <a href="#services" class="pill-item">Xidmətlər</a>
-        <button type="button" class="pill-item pill-cv-trigger" id="openCvBtn">
-          <i class="fa-regular fa-file-pdf text-fire"></i> CV
-        </button>
         <a href="#contact" class="pill-item">Əlaqə</a>
       </nav>
 
       <div class="nav-quick-actions">
-        <button type="button" class="btn-pill-cv" id="navCvQuickBtn" title="CV-yə Bax &amp; Yüklə">
+        <button type="button" class="btn-nav-cv" id="navCvQuickBtn" title="CV-yə Bax &amp; Yüklə">
           <i class="fa-regular fa-file-pdf"></i>
           <span>CV</span>
         </button>
-        <a href="https://github.com/vahidselimov" target="_blank" rel="noopener noreferrer" class="nav-icon-link" aria-label="GitHub">
+        <a href="https://github.com/vahidselimov" target="_blank" rel="noopener noreferrer" class="nav-icon-link" aria-label="GitHub" title="GitHub Profilim">
           <i class="fa-brands fa-github"></i>
         </a>
-        <a href="https://www.linkedin.com/in/vahid-salimov-007a81259/" target="_blank" rel="noopener noreferrer" class="nav-icon-link" aria-label="LinkedIn">
+        <a href="https://www.linkedin.com/in/vahid-salimov-007a81259/" target="_blank" rel="noopener noreferrer" class="nav-icon-link" aria-label="LinkedIn" title="LinkedIn Profilim">
           <i class="fa-brands fa-linkedin-in"></i>
         </a>
-        <a href="https://wa.me/994509621210" target="_blank" rel="noopener noreferrer" class="btn-pill-primary">
+        <a href="https://wa.me/994509621210" target="_blank" rel="noopener noreferrer" class="nav-icon-link nav-icon-wa" aria-label="WhatsApp" title="WhatsApp ilə Əlaqə">
           <i class="fa-brands fa-whatsapp"></i>
-          <span>Əlaqə</span>
         </a>
         <button class="mobile-toggle" id="mobileToggle" aria-label="Menyu">
           <span></span>
@@ -81,6 +87,39 @@
         </button>
       </div>
     </header>
+  </div>
+
+  <!-- Mobile Navigation Drawer -->
+  <div class="mobile-drawer-backdrop" id="mobileDrawer" aria-hidden="true">
+    <div class="mobile-drawer-sheet font-mono">
+      <div class="drawer-header">
+        <span class="drawer-brand">&gt;_ vahid<span class="brand-dim">.salimov</span></span>
+        <button type="button" class="drawer-close" id="drawerCloseBtn" aria-label="Bağla"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="drawer-status">
+        <span class="pulse-mono"></span>
+        <span>AVAILABLE FOR ROLES · BAKU, AZE</span>
+      </div>
+      <nav class="drawer-nav">
+        <a href="#hero" class="drawer-item"><span>00 // Giriş</span> <i class="fa-solid fa-arrow-right"></i></a>
+        <a href="#about" class="drawer-item"><span>01 // Haqqımda</span> <i class="fa-solid fa-arrow-right"></i></a>
+        <a href="#ocaqdev" class="drawer-item"><span>02 // ocaq.dev (PaaS)</span> <i class="fa-solid fa-fire"></i></a>
+        <a href="#code-lab" class="drawer-item"><span>03 // Code Lab</span> <i class="fa-solid fa-laptop-code"></i></a>
+        <a href="#skills" class="drawer-item"><span>04 // Texnologiyalar</span> <i class="fa-solid fa-microchip"></i></a>
+        <a href="#services" class="drawer-item"><span>05 // Xidmətlər</span> <i class="fa-solid fa-briefcase"></i></a>
+        <a href="#contact" class="drawer-item"><span>06 // Əlaqə</span> <i class="fa-regular fa-paper-plane"></i></a>
+      </nav>
+      <div class="drawer-actions">
+        <button type="button" class="btn-hero-cv w-100" id="drawerCvBtn">
+          <i class="fa-regular fa-file-pdf"></i>
+          <span>CV / Rezüme (AZ &amp; EN)</span>
+        </button>
+        <a href="https://wa.me/994509621210" target="_blank" rel="noopener noreferrer" class="btn-hero-wa w-100">
+          <i class="fa-brands fa-whatsapp"></i>
+          <span>050 962 12 10</span>
+        </a>
+      </div>
+    </div>
   </div>
 
   <main>
@@ -122,22 +161,20 @@
           </div>
 
           <div class="hero-actions-row fade-in delay-4">
-            <button type="button" class="btn-motion-cv" id="heroCvBtn">
+            <button type="button" class="btn-hero-cv" id="heroCvBtn">
               <i class="fa-regular fa-file-pdf"></i>
               <span>CV / Rezüme (AZ &amp; EN)</span>
             </button>
-            <a href="#ocaqdev" class="btn-motion-primary">
-              <span class="btn-inner">
-                <i class="fa-solid fa-fire"></i>
-                <span>ocaq.dev Platforması</span>
-                <i class="fa-solid fa-arrow-right"></i>
-              </span>
+            <a href="#ocaqdev" class="btn-hero-primary">
+              <i class="fa-solid fa-fire"></i>
+              <span>ocaq.dev Platforması</span>
+              <i class="fa-solid fa-arrow-right"></i>
             </a>
-            <a href="https://github.com/vahidselimov" target="_blank" rel="noopener noreferrer" class="btn-motion-secondary">
+            <a href="https://github.com/vahidselimov" target="_blank" rel="noopener noreferrer" class="btn-hero-secondary">
               <i class="fa-brands fa-github"></i>
               <span>GitHub</span>
             </a>
-            <a href="https://wa.me/994509621210" target="_blank" rel="noopener noreferrer" class="btn-motion-whatsapp">
+            <a href="https://wa.me/994509621210" target="_blank" rel="noopener noreferrer" class="btn-hero-wa">
               <i class="fa-brands fa-whatsapp"></i>
               <span>050 962 12 10</span>
             </a>
@@ -167,7 +204,7 @@
 
         <!-- Right Column: Clean Portrait in IDE Window Frame -->
         <div class="hero-right-visual fade-in delay-2">
-          <div class="ide-window-frame">
+          <div class="ide-window-frame" data-spotlight>
             
             <!-- Window Titlebar -->
             <div class="ide-titlebar">
@@ -182,7 +219,7 @@
                 <span class="tab-indicator">•</span>
               </div>
               <div class="ide-status font-mono">
-                <span class="pulse-green"></span>
+                <span class="pulse-mono"></span>
                 <span>SYSTEM ACTIVE</span>
               </div>
             </div>
@@ -228,22 +265,22 @@
       <!-- Engineering Metrics Strip (MotionSites Bento Row) -->
       <div class="container hero-stats-container fade-in delay-5">
         <div class="stats-bento-strip">
-          <div class="stat-bento-cell">
+          <div class="stat-bento-cell" data-spotlight>
             <span class="stat-tag font-mono">VENTURE</span>
             <h3 class="stat-value">Founder</h3>
             <p class="stat-desc font-mono">ocaq.dev Cloud PaaS</p>
           </div>
-          <div class="stat-bento-cell">
+          <div class="stat-bento-cell" data-spotlight>
             <span class="stat-tag font-mono">INFRASTRUCTURE</span>
-            <h3 class="stat-value">35+ Regions</h3>
+            <h3 class="stat-value" id="counterRegions">35+ Regions</h3>
             <p class="stat-desc font-mono">Global Edge Caching</p>
           </div>
-          <div class="stat-bento-cell">
+          <div class="stat-bento-cell" data-spotlight>
             <span class="stat-tag font-mono">TECH STACK</span>
-            <h3 class="stat-value">22+ Technologies</h3>
+            <h3 class="stat-value" id="counterTech">22+ Tech</h3>
             <p class="stat-desc font-mono">Full-Stack &amp; DevOps</p>
           </div>
-          <div class="stat-bento-cell">
+          <div class="stat-bento-cell" data-spotlight>
             <span class="stat-tag font-mono">EXECUTION</span>
             <h3 class="stat-value">Instant</h3>
             <p class="stat-desc font-mono">Git Push &amp; Auto Deploy</p>
@@ -276,7 +313,7 @@
         <div class="ocaq-showcase-bento">
           
           <!-- Top Row: Interactive Platform Mockup -->
-          <div class="ocaq-mockup-frame">
+          <div class="ocaq-mockup-frame" data-spotlight>
             <div class="mockup-header font-mono">
               <div class="mockup-dots">
                 <span class="dot red"></span>
@@ -288,20 +325,204 @@
                 <span>https://ocaq.dev/ — Next-Gen Developer Cloud</span>
               </div>
               <div class="mockup-ping">
-                <span class="pulse-green"></span>
-                <span>LATENCY: 12ms</span>
+                <span class="pulse-mono"></span>
+                <span id="mockupPingText">LATENCY: 12ms</span>
               </div>
             </div>
 
-            <div class="mockup-image-box">
-              <img src="assets/images/ocaq-dev-preview.jpg" alt="ocaq.dev Platform Preview Dashboard" class="mockup-img" loading="lazy">
-              <div class="mockup-overlay">
-                <a href="https://ocaq.dev/" target="_blank" rel="noopener noreferrer" class="btn-motion-primary">
-                  <span class="btn-inner">
-                    <span>ocaq.dev Platformasına Keçid</span>
+            <!-- Authentic ocaq.dev Frontend Application Canvas -->
+            <div class="ocaq-live-app">
+              
+              <!-- ocaq.dev Internal Nav -->
+              <div class="ocaq-internal-nav">
+                <div class="ocaq-brand-wrap">
+                  <span class="ocaq-brand-flame">🔥</span>
+                  <span class="ocaq-brand-name">Ocaq</span>
+                  <span class="ocaq-cloud-tag font-mono">PaaS</span>
+                </div>
+                <div class="ocaq-nav-links font-mono">
+                  <span class="ocaq-link active">Home</span>
+                  <span class="ocaq-link">About</span>
+                  <span class="ocaq-link">Pricing</span>
+                  <span class="ocaq-link">Docs</span>
+                </div>
+                <div class="ocaq-nav-cta">
+                  <a href="https://ocaq.dev/register" target="_blank" rel="noopener noreferrer" class="ocaq-btn-signup font-mono">
+                    Sign Up
+                  </a>
+                  <a href="https://ocaq.dev/" target="_blank" rel="noopener noreferrer" class="ocaq-btn-visit" title="ocaq.dev saytına keçid">
                     <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                  </a>
+                </div>
+              </div>
+
+              <!-- ocaq.dev Hero Banner -->
+              <div class="ocaq-hero-content">
+                <div class="ocaq-badge-strip">
+                  <span class="ocaq-mini-badge font-mono">
+                    <i class="fa-solid fa-circle-check text-silver"></i>
+                    SUPPORTING THE PRIMITIVES YOU NEED
                   </span>
-                </a>
+                </div>
+                
+                <h3 class="ocaq-hero-title">
+                  Ship software <br/>
+                  <span class="text-gradient">with confidence.</span>
+                </h3>
+
+                <p class="ocaq-hero-sub">
+                  The deployment platform for modern developers. Connect your repository, and let us build, deploy, and scale your code automatically.
+                </p>
+
+                <div class="ocaq-cta-cluster">
+                  <a href="https://ocaq.dev/register" target="_blank" rel="noopener noreferrer" class="btn-hero-primary ocaq-cta-primary">
+                    <i class="fa-solid fa-rocket"></i>
+                    <span>Get Started</span>
+                  </a>
+                  <a href="https://ocaq.dev/" target="_blank" rel="noopener noreferrer" class="btn-hero-secondary ocaq-cta-secondary">
+                    <i class="fa-solid fa-play"></i>
+                    <span>Try Demo</span>
+                  </a>
+                </div>
+              </div>
+
+              <!-- ocaq.dev Primitives Badges Bar -->
+              <div class="ocaq-primitives-bar font-mono">
+                <span class="primitive-chip"><i class="fa-brands fa-react"></i> Next.js</span>
+                <span class="primitive-sep">/</span>
+                <span class="primitive-chip"><i class="fa-brands fa-vuejs"></i> Nuxt</span>
+                <span class="primitive-sep">/</span>
+                <span class="primitive-chip"><i class="fa-brands fa-node-js"></i> Node.js</span>
+                <span class="primitive-sep">/</span>
+                <span class="primitive-chip"><i class="fa-solid fa-leaf"></i> Spring Boot</span>
+                <span class="primitive-sep">/</span>
+                <span class="primitive-chip"><i class="fa-brands fa-docker"></i> Docker</span>
+              </div>
+
+              <!-- ocaq.dev Live Deployments Bento Feed -->
+              <div class="ocaq-deployments-grid">
+                
+                <!-- Deployment Card 1: Active Web Service -->
+                <div class="ocaq-deploy-card">
+                  <div class="deploy-card-top">
+                    <div class="deploy-avatar">
+                      <i class="fa-solid fa-globe"></i>
+                    </div>
+                    <div class="deploy-meta">
+                      <div class="deploy-name">example-landing</div>
+                      <div class="deploy-domain font-mono">example.ocaq.dev</div>
+                    </div>
+                    <div class="deploy-status-pill font-mono">
+                      <span class="pulse-mono"></span>
+                      <span>READY · 12ms</span>
+                    </div>
+                  </div>
+                  <div class="deploy-card-details font-mono">
+                    <div class="deploy-commit">
+                      <i class="fa-solid fa-code-commit"></i>
+                      <span>fix: optimize image loading &amp; edge caching</span>
+                    </div>
+                    <div class="deploy-repo">
+                      <i class="fa-brands fa-github"></i>
+                      <span>awesomedev/example-landing · Oct 12</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Deployment Card 2: Microservice API with Instant Rollback -->
+                <div class="ocaq-deploy-card">
+                  <div class="deploy-card-top">
+                    <div class="deploy-avatar">
+                      <i class="fa-solid fa-server"></i>
+                    </div>
+                    <div class="deploy-meta">
+                      <div class="deploy-name">backend-api</div>
+                      <div class="deploy-domain font-mono">api.ocaq.dev</div>
+                    </div>
+                    <div class="deploy-status-pill font-mono status-active">
+                      <span class="pulse-mono"></span>
+                      <span>ACTIVE · 31ms</span>
+                    </div>
+                  </div>
+                  <div class="deploy-card-details font-mono">
+                    <div class="deploy-commit">
+                      <i class="fa-solid fa-code-commit"></i>
+                      <span>feat: add distributed redis caching &amp; pg pool</span>
+                    </div>
+                    <div class="deploy-repo">
+                      <i class="fa-brands fa-gitlab"></i>
+                      <span>awesomedev/backend-api · Oct 14</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- ocaq.dev Features Bar: Instant Rollbacks, Security & Global CDN -->
+              <div class="ocaq-features-strip font-mono">
+                <div class="ocaq-feat-item">
+                  <i class="fa-solid fa-rotate-left text-silver"></i>
+                  <span><strong>Instant Rollbacks:</strong> Zero downtime revert to any commit</span>
+                </div>
+                <div class="ocaq-feat-item">
+                  <i class="fa-solid fa-shield-halved text-silver"></i>
+                  <span><strong>Enterprise Security:</strong> Auto SSL, DDoS &amp; WAF included</span>
+                </div>
+                <div class="ocaq-feat-item">
+                  <i class="fa-solid fa-network-wired text-silver"></i>
+                  <span><strong>Global Anycast:</strong> 35+ Edge Mesh regions worldwide</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Interactive 3D Global Edge Latency Radar -->
+          <div class="edge-latency-radar font-mono">
+            <div class="radar-header">
+              <div class="radar-title">
+                <i class="fa-solid fa-network-wired text-silver"></i>
+                <span>OCAQ.DEV GLOBAL EDGE LATENCY RADAR</span>
+              </div>
+              <div class="radar-status">
+                <span class="pulse-mono"></span>
+                <span>35+ MESH NODES OPERATIONAL</span>
+              </div>
+            </div>
+
+            <div class="edge-nodes-list" id="edgeNodesList">
+              <button type="button" class="edge-node-pill active" data-region="baku" data-ms="12">
+                <span class="node-indicator"></span>
+                <span class="node-name">Baku (Edge-01)</span>
+                <span class="node-latency">12 ms</span>
+              </button>
+              <button type="button" class="edge-node-pill" data-region="fra" data-ms="31">
+                <span class="node-indicator"></span>
+                <span class="node-name">Frankfurt (EU-Central)</span>
+                <span class="node-latency">31 ms</span>
+              </button>
+              <button type="button" class="edge-node-pill" data-region="lon" data-ms="38">
+                <span class="node-indicator"></span>
+                <span class="node-name">London (UK-South)</span>
+                <span class="node-latency">38 ms</span>
+              </button>
+              <button type="button" class="edge-node-pill" data-region="sin" data-ms="84">
+                <span class="node-indicator"></span>
+                <span class="node-name">Singapore (AP-East)</span>
+                <span class="node-latency">84 ms</span>
+              </button>
+              <button type="button" class="edge-node-pill" data-region="nyc" data-ms="92">
+                <span class="node-indicator"></span>
+                <span class="node-name">New York (US-East)</span>
+                <span class="node-latency">92 ms</span>
+              </button>
+            </div>
+
+            <div class="radar-live-test" id="radarLiveOutput">
+              <div class="ping-trace-row">
+                <span class="trace-label">AKTİV MARŞRUT:</span>
+                <span class="trace-val text-silver" id="activeRouteText">client &rarr; baku-edge-01.ocaq.dev (TLS 1.3 · HTTP/3)</span>
+                <span class="trace-ping-badge" id="activePingBadge">12ms · ULTRA-FAST</span>
               </div>
             </div>
           </div>
@@ -309,7 +530,7 @@
           <!-- Bottom Row: 3 Core Pillars Bento -->
           <div class="ocaq-pillars-grid">
             
-            <div class="pillar-card">
+            <div class="pillar-card" data-spotlight>
               <div class="pillar-icon-box">
                 <i class="fa-solid fa-bolt-lightning"></i>
               </div>
@@ -324,8 +545,8 @@
               </div>
             </div>
 
-            <div class="pillar-card">
-              <div class="pillar-icon-box icon-cyan">
+            <div class="pillar-card" data-spotlight>
+              <div class="pillar-icon-box">
                 <i class="fa-solid fa-terminal"></i>
               </div>
               <div class="pillar-content">
@@ -339,8 +560,8 @@
               </div>
             </div>
 
-            <div class="pillar-card">
-              <div class="pillar-icon-box icon-purple">
+            <div class="pillar-card" data-spotlight>
+              <div class="pillar-icon-box">
                 <i class="fa-solid fa-globe"></i>
               </div>
               <div class="pillar-content">
@@ -382,7 +603,7 @@
         </div>
 
         <!-- Interactive Code Editor Widget -->
-        <div class="editor-widget">
+        <div class="editor-widget" data-spotlight>
           
           <div class="editor-topbar">
             <div class="editor-tabs">
@@ -400,6 +621,10 @@
               </button>
             </div>
             <div class="editor-actions font-mono">
+              <button type="button" class="btn-copy-code" id="copyCodeBtn" title="Kodu kopyala">
+                <i class="fa-regular fa-copy"></i>
+                <span id="copyCodeText">Kodu Kopyala</span>
+              </button>
               <span class="editor-lang-tag">C# 13 · ASP.NET Core API</span>
             </div>
           </div>
@@ -485,6 +710,28 @@
             </div>
           </div>
 
+          <!-- Interactive Cloud Terminal Execution Box -->
+          <div class="interactive-terminal-box font-mono">
+            <div class="term-input-row">
+              <span class="term-prompt-sym">vahid@ocaq-cloud:~$</span>
+              <input type="text" id="terminalInput" class="term-input" placeholder="Əmr yazın: help, deploy, status, nodes, clear..." autocomplete="off" spellcheck="false">
+              <button type="button" id="termRunBtn" class="term-run-btn">
+                <i class="fa-solid fa-play"></i>
+                <span>İcra et</span>
+              </button>
+            </div>
+            <div class="term-quick-chips">
+              <span class="chip-label">Sürətli əmrlər:</span>
+              <button type="button" class="term-chip" data-cmd="deploy">run deploy</button>
+              <button type="button" class="term-chip" data-cmd="status">check status</button>
+              <button type="button" class="term-chip" data-cmd="nodes">list nodes</button>
+              <button type="button" class="term-chip" data-cmd="clear">clear</button>
+            </div>
+            <div class="term-console-log font-mono" id="terminalLog">
+              <div class="log-line"><span class="log-time">[SYSTEM]</span> <span class="log-success">&gt; ocaq.dev Cloud PaaS Engine v2.4 initialized. Ready for commands. Type "help" to see available commands.</span></div>
+            </div>
+          </div>
+
         </div>
 
       </div>
@@ -510,30 +757,39 @@
           </p>
         </div>
 
-        <!-- MotionSites Filter Bar -->
-        <div class="motionsites-filter-wrap">
-          <div class="filter-pill-container font-mono">
-            <button class="filter-btn active" data-filter="all">
-              <span>All Tech</span>
-              <span class="pill-count" id="count-all">22</span>
-            </button>
-            <button class="filter-btn" data-filter="frontend">
-              <span>Frontend</span>
-              <span class="pill-count" id="count-frontend">10</span>
-            </button>
-            <button class="filter-btn" data-filter="backend">
-              <span>Backend &amp; API</span>
-              <span class="pill-count" id="count-backend">5</span>
-            </button>
-            <button class="filter-btn" data-filter="database">
-              <span>Databases</span>
-              <span class="pill-count" id="count-database">4</span>
-            </button>
-            <button class="filter-btn" data-filter="devops">
-              <span>DevOps &amp; Cloud</span>
-              <span class="pill-count" id="count-devops">4</span>
-            </button>
+        <!-- Real-time Tech Search & Filter Bar -->
+        <div class="skills-filter-toolbar">
+          <div class="skills-search-wrapper font-mono">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" id="techSearchInput" placeholder="Axtarış: React, Docker, .NET, PostgreSQL, C#..." autocomplete="off">
+            <button type="button" id="clearSearchBtn" class="clear-search-btn" title="Təmizlə" style="display:none;"><i class="fa-solid fa-xmark"></i></button>
           </div>
+
+          <div class="motionsites-filter-wrap">
+            <div class="filter-pill-container font-mono">
+              <button class="filter-btn active" data-filter="all">
+                <span>All Tech</span>
+                <span class="pill-count" id="count-all">22</span>
+              </button>
+              <button class="filter-btn" data-filter="frontend">
+                <span>Frontend</span>
+                <span class="pill-count" id="count-frontend">10</span>
+              </button>
+              <button class="filter-btn" data-filter="backend">
+                <span>Backend &amp; API</span>
+                <span class="pill-count" id="count-backend">5</span>
+              </button>
+              <button class="filter-btn" data-filter="database">
+                <span>Databases</span>
+                <span class="pill-count" id="count-database">4</span>
+              </button>
+              <button class="filter-btn" data-filter="devops">
+                <span>DevOps &amp; Cloud</span>
+                <span class="pill-count" id="count-devops">4</span>
+              </button>
+            </div>
+          </div>
+          <div class="search-results-info font-mono" id="searchResultsInfo"></div>
         </div>
 
         <!-- Software Engineer Tech Cards Grid -->
@@ -801,7 +1057,7 @@
         <div class="about-bento-grid">
           
           <!-- Big Story Card -->
-          <div class="bento-card bento-span-2">
+          <div class="bento-card bento-span-2" data-spotlight>
             <div class="bento-card-badge font-mono">FOUNDER'S STORY</div>
             <h3 class="bento-card-title">İdeyalardan Qlobal Bulud İnfrastrukturuna</h3>
             <p class="bento-card-text">
@@ -819,8 +1075,8 @@
           </div>
 
           <!-- Card 2: Clean Code & Architecture -->
-          <div class="bento-card">
-            <div class="bento-icon-box text-emerald">
+          <div class="bento-card" data-spotlight>
+            <div class="bento-icon-box">
               <i class="fa-solid fa-cubes-stacked"></i>
             </div>
             <h3 class="bento-card-title">Təmiz Arxitektura</h3>
@@ -831,8 +1087,8 @@
           </div>
 
           <!-- Card 3: Cloud & Edge Computing -->
-          <div class="bento-card">
-            <div class="bento-icon-box text-fire">
+          <div class="bento-card" data-spotlight>
+            <div class="bento-icon-box">
               <i class="fa-solid fa-server"></i>
             </div>
             <h3 class="bento-card-title">Yüksək Yüklənmə &amp; Təhlükəsizlik</h3>
@@ -843,7 +1099,7 @@
           </div>
 
           <!-- Card 4: Global Developer Community -->
-          <div class="bento-card bento-span-2">
+          <div class="bento-card bento-span-2" data-spotlight>
             <div class="bento-card-badge font-mono">COMMUNITY &amp; IMPACT</div>
             <h3 class="bento-card-title">Təhsil və İnnovasiya Mərkəzləri Üçün</h3>
             <p class="bento-card-text">
@@ -883,7 +1139,7 @@
 
         <div class="services-grid">
           
-          <div class="service-box">
+          <div class="service-box" data-spotlight>
             <div class="service-index font-mono">01 // BACKEND</div>
             <div class="service-icon"><i class="fa-solid fa-server"></i></div>
             <h3 class="service-name">Enterprise Backend &amp; Microservices</h3>
@@ -897,7 +1153,7 @@
             </ul>
           </div>
 
-          <div class="service-box service-featured">
+          <div class="service-box service-featured" data-spotlight>
             <div class="service-index font-mono">02 // FULL-STACK</div>
             <div class="service-icon"><i class="fa-solid fa-layer-group"></i></div>
             <h3 class="service-name">Modern Web &amp; Full-Stack Platformalar</h3>
@@ -911,7 +1167,7 @@
             </ul>
           </div>
 
-          <div class="service-box">
+          <div class="service-box" data-spotlight>
             <div class="service-index font-mono">03 // DEVOPS &amp; CLOUD</div>
             <div class="service-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
             <h3 class="service-name">Bulud Həlləri &amp; Avtomatlaşdırma</h3>
@@ -955,8 +1211,8 @@
               <div class="contact-cards-stack">
                 
                 <!-- Email Copy Card -->
-                <div class="contact-item-card">
-                  <div class="contact-item-icon text-blue"><i class="fa-solid fa-envelope"></i></div>
+                <div class="contact-item-card" data-spotlight>
+                  <div class="contact-item-icon"><i class="fa-solid fa-envelope"></i></div>
                   <div class="contact-item-text">
                     <span class="item-label font-mono">EMAIL</span>
                     <a href="mailto:Vahidslimov01@gmail.com" class="item-val">Vahidslimov01@gmail.com</a>
@@ -967,8 +1223,8 @@
                 </div>
 
                 <!-- Phone / WhatsApp Copy Card -->
-                <div class="contact-item-card">
-                  <div class="contact-item-icon text-emerald"><i class="fa-brands fa-whatsapp"></i></div>
+                <div class="contact-item-card" data-spotlight>
+                  <div class="contact-item-icon"><i class="fa-brands fa-whatsapp"></i></div>
                   <div class="contact-item-text">
                     <span class="item-label font-mono">PHONE &amp; WHATSAPP</span>
                     <a href="https://wa.me/994509621210" target="_blank" rel="noopener noreferrer" class="item-val">050 962 12 10</a>
@@ -979,8 +1235,8 @@
                 </div>
 
                 <!-- Location Card -->
-                <div class="contact-item-card">
-                  <div class="contact-item-icon text-purple"><i class="fa-solid fa-location-dot"></i></div>
+                <div class="contact-item-card" data-spotlight>
+                  <div class="contact-item-icon"><i class="fa-solid fa-location-dot"></i></div>
                   <div class="contact-item-text">
                     <span class="item-label font-mono">LOCATION</span>
                     <span class="item-val">Bakı, Azərbaycan (Remote &amp; On-Site)</span>
@@ -990,7 +1246,7 @@
               </div>
 
               <div class="direct-wa-wrap">
-                <a href="https://wa.me/994509621210" target="_blank" rel="noopener noreferrer" class="btn-motion-whatsapp w-100">
+                <a href="https://wa.me/994509621210" target="_blank" rel="noopener noreferrer" class="btn-direct-wa w-100">
                   <i class="fa-brands fa-whatsapp"></i>
                   <span>WhatsApp ilə Birbaşa Yazın</span>
                 </a>
@@ -1034,15 +1290,13 @@
                   </div>
 
                   <div class="form-actions-split">
-                    <button type="button" class="btn-motion-whatsapp flex-1" id="sendWhatsAppBtn">
+                    <button type="button" class="btn-form-whatsapp" id="sendWhatsAppBtn">
                       <i class="fa-brands fa-whatsapp"></i>
                       <span>WhatsApp ilə Göndər</span>
                     </button>
-                    <button type="submit" class="btn-motion-primary flex-1" id="sendEmailBtn">
-                      <span class="btn-inner">
-                        <i class="fa-regular fa-paper-plane"></i>
-                        <span>Email ilə Göndər</span>
-                      </span>
+                    <button type="submit" class="btn-form-submit" id="sendEmailBtn">
+                      <i class="fa-regular fa-paper-plane"></i>
+                      <span>Email ilə Göndər</span>
                     </button>
                   </div>
                 </form>
@@ -1154,11 +1408,9 @@
         <!-- Mobile / Fallback Toolbar if iframe has issues on small mobile screens -->
         <div class="cv-mobile-notice font-mono">
           <p>Mobil cihazda birbaşa açılmırsa:</p>
-          <a href="assets/cv/Vahid_Salimov_Resume_AZ.pdf" download id="cvFallbackDownloadBtn" class="btn-motion-primary">
-            <span class="btn-inner">
-              <i class="fa-solid fa-download"></i>
-              <span>PDF-i Cihaza Yüklə</span>
-            </span>
+          <a href="assets/cv/Vahid_Salimov_Resume_AZ.pdf" download id="cvFallbackDownloadBtn" class="btn-hero-primary">
+            <i class="fa-solid fa-download"></i>
+            <span>PDF-i Cihaza Yüklə</span>
           </a>
         </div>
       </div>
